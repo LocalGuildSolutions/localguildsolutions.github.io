@@ -69,7 +69,7 @@
 <h2>🔒 Camera System</h2>
 <select id="camsys" onchange="calc()">
   <option value="0">None</option>
-  <option value="400">Reolink NVR System (~$400+)</option>
+  <option value="400">Reolink NVR (~$400+)</option>
   <option value="800">Integrated Cameras ($800+)</option>
 </select>
 </div>
@@ -82,20 +82,38 @@
 <button onclick="change('cams', 1)">+</button>
 </div>
 
+<!-- DEVICES -->
+<div class="box">
+<h2>🔌 Devices</h2>
+
+<p><b>Smart Plugs ($15 each)</b></p>
+<button onclick="change('plug', -1)">-</button>
+<span id="plug">0</span>
+<button onclick="change('plug', 1)">+</button>
+
+<p><b>Zigbee Smart Switch ($25 each)</b></p>
+<button onclick="change('switch', -1)">-</button>
+<span id="switch">0</span>
+<button onclick="change('switch', 1)">+</button>
+
+<p><b>Motion Sensors ($20 each)</b></p>
+<button onclick="change('motion', -1)">-</button>
+<span id="motion">0</span>
+<button onclick="change('motion', 1)">+</button>
+
+<p><b>Door/Window Sensors ($20 each)</b></p>
+<button onclick="change('door', -1)">-</button>
+<span id="door">0</span>
+<button onclick="change('door', 1)">+</button>
+
+</div>
+
 <!-- AUTOMATIONS -->
 <div class="box">
 <h2>💡 Automations ($150 avg)</h2>
 <button onclick="change('auto', -1)">-</button>
 <span id="auto">0</span>
 <button onclick="change('auto', 1)">+</button>
-</div>
-
-<!-- SENSORS -->
-<div class="box">
-<h2>🌡️ Sensors ($120 avg)</h2>
-<button onclick="change('sensor', -1)">-</button>
-<span id="sensor">0</span>
-<button onclick="change('sensor', 1)">+</button>
 </div>
 
 <!-- REMOTE ACCESS -->
@@ -117,14 +135,25 @@
 <script>
 let cams = 0;
 let auto = 0;
-let sensor = 0;
+let plug = 0;
+let switchs = 0;
+let motion = 0;
+let door = 0;
 
 function change(type, val) {
   if (type === 'cams') cams = Math.max(0, cams + val);
   if (type === 'auto') auto = Math.max(0, auto + val);
-  if (type === 'sensor') sensor = Math.max(0, sensor + val);
+  if (type === 'plug') plug = Math.max(0, plug + val);
+  if (type === 'switch') switchs = Math.max(0, switchs + val);
+  if (type === 'motion') motion = Math.max(0, motion + val);
+  if (type === 'door') door = Math.max(0, door + val);
 
-  document.getElementById(type).innerText = eval(type);
+  if (type === 'switch') {
+    document.getElementById(type).innerText = switchs;
+  } else {
+    document.getElementById(type).innerText = eval(type);
+  }
+
   calc();
 }
 
@@ -138,8 +167,11 @@ function calc() {
     base +
     camsys +
     (cams * 75) +
+    (plug * 15) +
+    (switchs * 25) +
+    (motion * 20) +
+    (door * 20) +
     (auto * 150) +
-    (sensor * 120) +
     remote +
     hardware;
 
@@ -148,4 +180,4 @@ function calc() {
 </script>
 
 </body>
-  </html>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Quote Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial;
+      background: #0f172a;
+      color: #e2e8f0;
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+    }
+    h1, h2 {
+      color: #38bdf8;
+    }
+    .box {
+      background: #1e293b;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 10px;
+    }
+    button {
+      padding: 8px 12px;
+      margin: 5px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      background: #38bdf8;
+      color: black;
+    }
+    .total {
+      font-size: 22px;
+      color: #22c55e;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<h1>💰 Quote Calculator</h1>
+
+<div class="box">
+<h2>📦 Base Package</h2>
+<select id="base" onchange="calc()">
+  <option value="0">None</option>
+  <option value="500">Basic ($500)</option>
+  <option value="1000">Standard ($800–1200)</option>
+  <option value="1500">Advanced ($1500+)</option>
+</select>
+</div>
+
+<div class="box">
+<h2>🔒 Cameras ($75 each)</h2>
+<button onclick="change('cams', -1)">-</button>
+<span id="cams">0</span>
+<button onclick="change('cams', 1)">+</button>
+</div>
+
+<div class="box">
+<h2>💡 Automations ($150 avg)</h2>
+<button onclick="change('auto', -1)">-</button>
+<span id="auto">0</span>
+<button onclick="change('auto', 1)">+</button>
+</div>
+
+<div class="box">
+<h2>🌡️ Sensors ($120 avg)</h2>
+<button onclick="change('sensor', -1)">-</button>
+<span id="sensor">0</span>
+<button onclick="change('sensor', 1)">+</button>
+</div>
+
+<div class="box">
+<h2>🌐 Remote Access</h2>
+<select id="remote" onchange="calc()">
+  <option value="0">None</option>
+  <option value="200">Private VPN ($150–300)</option>
+  <option value="100">Cloud Setup ($75–150)</option>
+</select>
+</div>
+
+<div class="box">
+<h2>💻 Hardware</h2>
+<input type="number" id="hardware" value="0" onchange="calc()" style="width:100px;">
+</div>
+
+<div class="box">
+<h2>Total</h2>
+<p class="total">$<span id="total">0</span></p>
+</div>
+
+<script>
+let cams = 0;
+let auto = 0;
+let sensor = 0;
+
+function change(type, val) {
+  if (type === 'cams') cams = Math.max(0, cams + val);
+  if (type === 'auto') auto = Math.max(0, auto + val);
+  if (type === 'sensor') sensor = Math.max(0, sensor + val);
+
+  document.getElementById(type).innerText = eval(type);
+  calc();
+}
+
+function calc() {
+  let base = parseInt(document.getElementById('base').value);
+  let remote = parseInt(document.getElementById('remote').value);
+  let hardware = parseInt(document.getElementById('hardware').value) || 0;
+
+  let total =
+    base +
+    (cams * 75) +
+    (auto * 150) +
+    (sensor * 120) +
+    remote +
+    hardware;
+
+  document.getElementById('total').innerText = total;
+}
+</script>
+
+</body>
+</html>

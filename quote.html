@@ -3,6 +3,7 @@
 <head>
   <title>Quote Calculator</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
     body {
       font-family: Arial;
@@ -29,6 +30,7 @@
       border-radius: 6px;
       background: #38bdf8;
       color: black;
+      cursor: pointer;
     }
     select, input {
       padding: 8px;
@@ -37,46 +39,47 @@
       width: 100%;
     }
     .total {
-      font-size: 24px;
+      font-size: 28px;
       color: #22c55e;
       font-weight: bold;
     }
   </style>
 </head>
+
 <body>
 
 <h1>💰 Quote Calculator</h1>
 
 <!-- BASE PACKAGE -->
 <div class="box">
-<h2>📦 Base Package</h2>
-<select id="base" onchange="calc()">
+<h2>📦 Base System</h2>
+<select id="base" onchange="calc(); beep();">
   <option value="0">None</option>
-  <option value="500">Basic ($500)</option>
-  <option value="1000">Standard ($800–1200 avg)</option>
-  <option value="1500">Advanced ($1500+)</option>
+  <option value="800">Basic ($800+)</option>
+  <option value="1500">Standard ($1,500+)</option>
+  <option value="3000">Advanced ($3,000+)</option>
 </select>
 </div>
 
 <!-- HARDWARE -->
 <div class="box">
-<h2>💻 Smart Home Hardware</h2>
-<input type="number" id="hardware" value="0" onchange="calc()" placeholder="Enter hardware cost">
+<h2>💻 Hardware</h2>
+<input type="number" id="hardware" value="0" oninput="calc(); beep();" placeholder="Enter hardware cost">
 </div>
 
 <!-- CAMERA SYSTEM -->
 <div class="box">
 <h2>🔒 Camera System</h2>
-<select id="camsys" onchange="calc()">
+<select id="camsys" onchange="calc(); beep();">
   <option value="0">None</option>
-  <option value="400">Reolink NVR (~$400+)</option>
-  <option value="800">Integrated Cameras ($800+)</option>
+  <option value="500">Reolink NVR System ($500+)</option>
+  <option value="1200">Integrated Smart Cameras ($1200+)</option>
 </select>
 </div>
 
 <!-- CAMERA INSTALL -->
 <div class="box">
-<h2>🔧 Camera Installation ($75 each)</h2>
+<h2>🔧 Camera Installation ($150 per camera)</h2>
 <button onclick="change('cams', -1)">-</button>
 <span id="cams">0</span>
 <button onclick="change('cams', 1)">+</button>
@@ -86,22 +89,22 @@
 <div class="box">
 <h2>🔌 Devices</h2>
 
-<p><b>Smart Plugs ($15 each)</b></p>
+<p><b>Smart Plugs ($25 each)</b></p>
 <button onclick="change('plug', -1)">-</button>
 <span id="plug">0</span>
 <button onclick="change('plug', 1)">+</button>
 
-<p><b>Zigbee Smart Switch ($25 each)</b></p>
+<p><b>Zigbee Switch ($40 each)</b></p>
 <button onclick="change('switch', -1)">-</button>
 <span id="switch">0</span>
 <button onclick="change('switch', 1)">+</button>
 
-<p><b>Motion Sensors ($20 each)</b></p>
+<p><b>Motion Sensors ($30 each)</b></p>
 <button onclick="change('motion', -1)">-</button>
 <span id="motion">0</span>
 <button onclick="change('motion', 1)">+</button>
 
-<p><b>Door/Window Sensors ($20 each)</b></p>
+<p><b>Door Sensors ($30 each)</b></p>
 <button onclick="change('door', -1)">-</button>
 <span id="door">0</span>
 <button onclick="change('door', 1)">+</button>
@@ -110,25 +113,25 @@
 
 <!-- AUTOMATIONS -->
 <div class="box">
-<h2>💡 Automations ($150 avg)</h2>
+<h2>💡 Automations ($200 each)</h2>
 <button onclick="change('auto', -1)">-</button>
 <span id="auto">0</span>
 <button onclick="change('auto', 1)">+</button>
 </div>
 
-<!-- REMOTE ACCESS -->
+<!-- REMOTE -->
 <div class="box">
 <h2>🌐 Remote Access</h2>
-<select id="remote" onchange="calc()">
+<select id="remote" onchange="calc(); beep();">
   <option value="0">None</option>
-  <option value="200">Private VPN ($150–300)</option>
-  <option value="100">Cloud Setup ($75–150)</option>
+  <option value="250">Private VPN Setup ($200–300)</option>
+  <option value="125">Cloud Option Setup ($75–150)</option>
 </select>
 </div>
 
 <!-- TOTAL -->
 <div class="box">
-<h2>Total</h2>
+<h2>Total Estimate</h2>
 <p class="total">$<span id="total">0</span></p>
 </div>
 
@@ -136,25 +139,46 @@
 let cams = 0;
 let auto = 0;
 let plug = 0;
-let switchs = 0;
+let sw = 0;
 let motion = 0;
 let door = 0;
+
+// simple click sound
+function beep() {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(600, ctx.currentTime);
+
+  gain.gain.setValueAtTime(0.05, ctx.currentTime);
+
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+
+  osc.start();
+  osc.stop(ctx.currentTime + 0.05);
+}
 
 function change(type, val) {
   if (type === 'cams') cams = Math.max(0, cams + val);
   if (type === 'auto') auto = Math.max(0, auto + val);
   if (type === 'plug') plug = Math.max(0, plug + val);
-  if (type === 'switch') switchs = Math.max(0, switchs + val);
+  if (type === 'switch') sw = Math.max(0, sw + val);
   if (type === 'motion') motion = Math.max(0, motion + val);
   if (type === 'door') door = Math.max(0, door + val);
 
-  if (type === 'switch') {
-    document.getElementById(type).innerText = switchs;
-  } else {
-    document.getElementById(type).innerText = eval(type);
-  }
+  document.getElementById(type).innerText =
+    type === 'switch' ? sw :
+    type === 'cams' ? cams :
+    type === 'auto' ? auto :
+    type === 'plug' ? plug :
+    type === 'motion' ? motion :
+    door;
 
   calc();
+  beep();
 }
 
 function calc() {
@@ -166,12 +190,12 @@ function calc() {
   let total =
     base +
     camsys +
-    (cams * 75) +
-    (plug * 15) +
-    (switchs * 25) +
-    (motion * 20) +
-    (door * 20) +
-    (auto * 150) +
+    (cams * 150) +
+    (plug * 25) +
+    (sw * 40) +
+    (motion * 30) +
+    (door * 30) +
+    (auto * 200) +
     remote +
     hardware;
 

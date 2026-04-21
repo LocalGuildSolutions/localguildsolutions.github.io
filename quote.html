@@ -13,15 +13,18 @@
       margin: auto;
       padding: 20px;
     }
+
     h1, h2 {
       color: #38bdf8;
     }
+
     .box {
       background: #1e293b;
       padding: 15px;
       margin: 12px 0;
       border-radius: 10px;
     }
+
     button {
       padding: 8px 12px;
       margin: 5px;
@@ -32,16 +35,23 @@
       color: black;
       cursor: pointer;
     }
+
     select, input {
       padding: 8px;
       margin-top: 8px;
       font-size: 16px;
       width: 100%;
     }
+
     .total {
-      font-size: 28px;
+      font-size: 26px;
       color: #22c55e;
       font-weight: bold;
+    }
+
+    .note {
+      font-size: 12px;
+      opacity: 0.8;
     }
   </style>
 </head>
@@ -53,79 +63,93 @@
 <!-- BASE PACKAGE -->
 <div class="box">
 <h2>📦 Base System</h2>
-<select id="base" onchange="calc(); beep();">
+
+<select id="base" onchange="calc()">
   <option value="0">None</option>
-  <option value="800">Basic ($800+)</option>
-  <option value="1500">Standard ($1,500+)</option>
-  <option value="3000">Advanced ($3,000+)</option>
+  <option value="800">Basic System ($800+)</option>
+  <option value="2000">Standard System (~$1,500–$2,500)</option>
+  <option value="5000">Advanced System ($3,000–$7,500+)</option>
 </select>
+
+<p class="note">Includes 2 automations per system (based on installed devices)</p>
 </div>
 
 <!-- HARDWARE -->
 <div class="box">
-<h2>💻 Hardware</h2>
-<input type="number" id="hardware" value="0" oninput="calc(); beep();" placeholder="Enter hardware cost">
+<h2>💻 Hardware (Optional)</h2>
+<input type="number" id="hardware" value="0" onchange="calc()" placeholder="Enter hardware cost if provided">
 </div>
 
 <!-- CAMERA SYSTEM -->
 <div class="box">
 <h2>🔒 Camera System</h2>
-<select id="camsys" onchange="calc(); beep();">
+
+<select id="camsys" onchange="calc()">
   <option value="0">None</option>
-  <option value="500">Reolink NVR System ($500+)</option>
-  <option value="1200">Integrated Smart Cameras ($1200+)</option>
+  <option value="350">Basic Setup (2 cameras included - $350 min)</option>
+  <option value="800">Expanded System ($800+)</option>
 </select>
 </div>
 
 <!-- CAMERA INSTALL -->
 <div class="box">
-<h2>🔧 Camera Installation ($150 per camera)</h2>
+<h2>📷 Additional Cameras</h2>
+
 <button onclick="change('cams', -1)">-</button>
 <span id="cams">0</span>
 <button onclick="change('cams', 1)">+</button>
+
+<p class="note">$125–$200 per additional camera</p>
 </div>
 
 <!-- DEVICES -->
 <div class="box">
-<h2>🔌 Devices</h2>
+<h2>🔌 Zigbee Devices</h2>
 
-<p><b>Smart Plugs ($25 each)</b></p>
+<p><b>Smart Plugs ($15)</b></p>
 <button onclick="change('plug', -1)">-</button>
 <span id="plug">0</span>
 <button onclick="change('plug', 1)">+</button>
 
-<p><b>Zigbee Switch ($40 each)</b></p>
-<button onclick="change('switch', -1)">-</button>
-<span id="switch">0</span>
-<button onclick="change('switch', 1)">+</button>
-
-<p><b>Motion Sensors ($30 each)</b></p>
+<p><b>Motion Sensors ($25)</b></p>
 <button onclick="change('motion', -1)">-</button>
 <span id="motion">0</span>
 <button onclick="change('motion', 1)">+</button>
 
-<p><b>Door Sensors ($30 each)</b></p>
+<p><b>Door Sensors ($25)</b></p>
 <button onclick="change('door', -1)">-</button>
 <span id="door">0</span>
 <button onclick="change('door', 1)">+</button>
-
 </div>
 
 <!-- AUTOMATIONS -->
 <div class="box">
-<h2>💡 Automations ($200 each)</h2>
-<button onclick="change('auto', -1)">-</button>
-<span id="auto">0</span>
-<button onclick="change('auto', 1)">+</button>
+<h2>💡 Extra Automations</h2>
+
+<p class="note">
+Each system includes 2 automations automatically.<br>
+Only extras are charged below.
+</p>
+
+<p><b>Simple Automations ($50 each)</b></p>
+<button onclick="change('autoSimple', -1)">-</button>
+<span id="autoSimple">0</span>
+<button onclick="change('autoSimple', 1)">+</button>
+
+<p><b>Advanced Automations ($75 each)</b></p>
+<button onclick="change('autoAdv', -1)">-</button>
+<span id="autoAdv">0</span>
+<button onclick="change('autoAdv', 1)">+</button>
 </div>
 
 <!-- REMOTE -->
 <div class="box">
 <h2>🌐 Remote Access</h2>
-<select id="remote" onchange="calc(); beep();">
+
+<select id="remote" onchange="calc()">
   <option value="0">None</option>
-  <option value="250">Private VPN Setup ($200–300)</option>
-  <option value="125">Cloud Option Setup ($75–150)</option>
+  <option value="200">Private VPN Setup ($150–$300)</option>
+  <option value="100">Cloud Option ($75–$150)</option>
 </select>
 </div>
 
@@ -137,48 +161,29 @@
 
 <script>
 let cams = 0;
-let auto = 0;
 let plug = 0;
-let sw = 0;
 let motion = 0;
 let door = 0;
-
-// simple click sound
-function beep() {
-  const ctx = new (window.AudioContext || window.webkitAudioContext)();
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
-
-  osc.type = "sine";
-  osc.frequency.setValueAtTime(600, ctx.currentTime);
-
-  gain.gain.setValueAtTime(0.05, ctx.currentTime);
-
-  osc.connect(gain);
-  gain.connect(ctx.destination);
-
-  osc.start();
-  osc.stop(ctx.currentTime + 0.05);
-}
+let autoSimple = 0;
+let autoAdv = 0;
 
 function change(type, val) {
   if (type === 'cams') cams = Math.max(0, cams + val);
-  if (type === 'auto') auto = Math.max(0, auto + val);
   if (type === 'plug') plug = Math.max(0, plug + val);
-  if (type === 'switch') sw = Math.max(0, sw + val);
   if (type === 'motion') motion = Math.max(0, motion + val);
   if (type === 'door') door = Math.max(0, door + val);
+  if (type === 'autoSimple') autoSimple = Math.max(0, autoSimple + val);
+  if (type === 'autoAdv') autoAdv = Math.max(0, autoAdv + val);
 
   document.getElementById(type).innerText =
-    type === 'switch' ? sw :
     type === 'cams' ? cams :
-    type === 'auto' ? auto :
     type === 'plug' ? plug :
     type === 'motion' ? motion :
-    door;
+    type === 'door' ? door :
+    type === 'autoSimple' ? autoSimple :
+    autoAdv;
 
   calc();
-  beep();
 }
 
 function calc() {
@@ -191,11 +196,11 @@ function calc() {
     base +
     camsys +
     (cams * 150) +
-    (plug * 25) +
-    (sw * 40) +
-    (motion * 30) +
-    (door * 30) +
-    (auto * 200) +
+    (plug * 15) +
+    (motion * 25) +
+    (door * 25) +
+    (autoSimple * 50) +
+    (autoAdv * 75) +
     remote +
     hardware;
 
@@ -204,4 +209,4 @@ function calc() {
 </script>
 
 </body>
-</html>
+  </html>

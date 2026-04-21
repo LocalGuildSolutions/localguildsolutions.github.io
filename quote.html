@@ -36,16 +36,15 @@
       cursor: pointer;
     }
 
-    select, input {
-      padding: 8px;
-      margin-top: 8px;
-      font-size: 16px;
-      width: 100%;
-    }
-
     .total {
       font-size: 26px;
       color: #22c55e;
+      font-weight: bold;
+    }
+
+    .recommend {
+      font-size: 18px;
+      color: #facc15;
       font-weight: bold;
     }
 
@@ -58,68 +57,33 @@
 
 <body>
 
-<h1>💰 Quote Calculator</h1>
-
-<!-- BASE PACKAGE -->
-<div class="box">
-<h2>📦 Base System</h2>
-
-<select id="base" onchange="calc()">
-  <option value="0">None</option>
-  <option value="800">Basic System ($800+)</option>
-  <option value="2000">Standard System (~$1,500–$2,500)</option>
-  <option value="5000">Advanced System ($3,000–$7,500+)</option>
-</select>
-
-<p class="note">Includes 2 automations per system (based on installed devices)</p>
-</div>
-
-<!-- HARDWARE -->
-<div class="box">
-<h2>💻 Hardware (Optional)</h2>
-<input type="number" id="hardware" value="0" onchange="calc()" placeholder="Enter hardware cost if provided">
-</div>
-
-<!-- CAMERA SYSTEM -->
-<div class="box">
-<h2>🔒 Camera System</h2>
-
-<select id="camsys" onchange="calc()">
-  <option value="0">None</option>
-  <option value="350">Basic Setup (2 cameras included - $350 min)</option>
-  <option value="800">Expanded System ($800+)</option>
-</select>
-</div>
-
-<!-- CAMERA INSTALL -->
-<div class="box">
-<h2>📷 Additional Cameras</h2>
-
-<button onclick="change('cams', -1)">-</button>
-<span id="cams">0</span>
-<button onclick="change('cams', 1)">+</button>
-
-<p class="note">$125–$200 per additional camera</p>
-</div>
+<h1>💰 Smart Quote Calculator</h1>
 
 <!-- DEVICES -->
 <div class="box">
 <h2>🔌 Zigbee Devices</h2>
 
-<p><b>Smart Plugs ($15)</b></p>
-<button onclick="change('plug', -1)">-</button>
-<span id="plug">0</span>
-<button onclick="change('plug', 1)">+</button>
-
-<p><b>Motion Sensors ($25)</b></p>
+<p>Motion Sensors ($25)</p>
 <button onclick="change('motion', -1)">-</button>
 <span id="motion">0</span>
 <button onclick="change('motion', 1)">+</button>
 
-<p><b>Door Sensors ($25)</b></p>
+<p>Smart Switches ($25)</p>
+<button onclick="change('switch', -1)">-</button>
+<span id="switch">0</span>
+<button onclick="change('switch', 1)">+</button>
+
+<p>Door Sensors ($25)</p>
 <button onclick="change('door', -1)">-</button>
 <span id="door">0</span>
 <button onclick="change('door', 1)">+</button>
+</div>
+
+<!-- PACKAGE AUTO -->
+<div class="box">
+<h2>📦 Recommended System</h2>
+<p class="recommend" id="package">None</p>
+<p class="note">System auto-selected based on total devices</p>
 </div>
 
 <!-- AUTOMATIONS -->
@@ -127,30 +91,37 @@
 <h2>💡 Extra Automations</h2>
 
 <p class="note">
-Each system includes 2 automations automatically.<br>
-Only extras are charged below.
+2 automations are included per system.<br>
+Extras only charged below.
 </p>
 
-<p><b>Simple Automations ($50 each)</b></p>
-<button onclick="change('autoSimple', -1)">-</button>
-<span id="autoSimple">0</span>
-<button onclick="change('autoSimple', 1)">+</button>
+<p>Simple ($50)</p>
+<button onclick="change('autoS', -1)">-</button>
+<span id="autoS">0</span>
+<button onclick="change('autoS', 1)">+</button>
 
-<p><b>Advanced Automations ($75 each)</b></p>
-<button onclick="change('autoAdv', -1)">-</button>
-<span id="autoAdv">0</span>
-<button onclick="change('autoAdv', 1)">+</button>
+<p>Advanced ($75)</p>
+<button onclick="change('autoA', -1)">-</button>
+<span id="autoA">0</span>
+<button onclick="change('autoA', 1)">+</button>
 </div>
 
-<!-- REMOTE -->
+<!-- CAMERAS -->
 <div class="box">
-<h2>🌐 Remote Access</h2>
+<h2>📷 Cameras</h2>
 
-<select id="remote" onchange="calc()">
-  <option value="0">None</option>
-  <option value="200">Private VPN Setup ($150–$300)</option>
-  <option value="100">Cloud Option ($75–$150)</option>
-</select>
+<p>Additional Cameras</p>
+<button onclick="change('cams', -1)">-</button>
+<span id="cams">0</span>
+<button onclick="change('cams', 1)">+</button>
+
+<p class="note">$350 includes first 2 cameras, extras $150 each</p>
+</div>
+
+<!-- HARDWARE -->
+<div class="box">
+<h2>💻 Hardware</h2>
+<input type="number" id="hardware" value="0" onchange="calc()" placeholder="Optional hardware cost">
 </div>
 
 <!-- TOTAL -->
@@ -160,48 +131,70 @@ Only extras are charged below.
 </div>
 
 <script>
-let cams = 0;
-let plug = 0;
 let motion = 0;
+let sw = 0;
 let door = 0;
-let autoSimple = 0;
-let autoAdv = 0;
+let autoS = 0;
+let autoA = 0;
+let cams = 0;
 
 function change(type, val) {
-  if (type === 'cams') cams = Math.max(0, cams + val);
-  if (type === 'plug') plug = Math.max(0, plug + val);
   if (type === 'motion') motion = Math.max(0, motion + val);
+  if (type === 'switch') sw = Math.max(0, sw + val);
   if (type === 'door') door = Math.max(0, door + val);
-  if (type === 'autoSimple') autoSimple = Math.max(0, autoSimple + val);
-  if (type === 'autoAdv') autoAdv = Math.max(0, autoAdv + val);
+  if (type === 'autoS') autoS = Math.max(0, autoS + val);
+  if (type === 'autoA') autoA = Math.max(0, autoA + val);
+  if (type === 'cams') cams = Math.max(0, cams + val);
 
   document.getElementById(type).innerText =
-    type === 'cams' ? cams :
-    type === 'plug' ? plug :
+    type === 'switch' ? sw :
     type === 'motion' ? motion :
     type === 'door' ? door :
-    type === 'autoSimple' ? autoSimple :
-    autoAdv;
+    type === 'autoS' ? autoS :
+    type === 'autoA' ? autoA :
+    cams;
 
   calc();
 }
 
 function calc() {
-  let base = parseInt(document.getElementById('base').value);
-  let camsys = parseInt(document.getElementById('camsys').value);
-  let remote = parseInt(document.getElementById('remote').value);
+
+  let devices = motion + sw + door;
+
+  let base = 0;
+  let packageName = "None";
+
+  if (devices >= 1 && devices <= 3) {
+    base = 800;
+    packageName = "🟢 Basic System ($800+)";
+  }
+  else if (devices >= 4 && devices <= 10) {
+    base = 2000;
+    packageName = "🔵 Standard System (~$1,500–$2,500)";
+  }
+  else if (devices >= 11) {
+    base = 5000;
+    packageName = "🔴 Advanced System ($3,000–$7,500+)";
+  }
+
+  document.getElementById("package").innerText = packageName;
+
   let hardware = parseInt(document.getElementById('hardware').value) || 0;
+
+  let camCost = 0;
+  if (cams > 0) {
+    camCost = 350;
+    if (cams > 2) {
+      camCost += (cams - 2) * 150;
+    }
+  }
 
   let total =
     base +
-    camsys +
-    (cams * 150) +
-    (plug * 15) +
-    (motion * 25) +
-    (door * 25) +
-    (autoSimple * 50) +
-    (autoAdv * 75) +
-    remote +
+    (devices * 25) +
+    (autoS * 50) +
+    (autoA * 75) +
+    camCost +
     hardware;
 
   document.getElementById('total').innerText = total;
@@ -209,4 +202,4 @@ function calc() {
 </script>
 
 </body>
-  </html>
+</html>

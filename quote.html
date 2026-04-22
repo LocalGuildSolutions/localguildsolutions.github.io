@@ -82,7 +82,7 @@
 <!-- PACKAGE AUTO -->
 <div class="box">
 <h2>📦 Recommended System</h2>
-<p class="recommend" id="package">None</p>
+<p class="recommend" id="package">🟡 Starter System Recommended</p>
 <p class="note">System auto-selected based on total devices</p>
 </div>
 
@@ -91,7 +91,7 @@
 <h2>💡 Extra Automations</h2>
 
 <p class="note">
-2 automations are included per system.<br>
+2 automations included per system.<br>
 Extras only charged below.
 </p>
 
@@ -162,17 +162,28 @@ function calc() {
   let devices = motion + sw + door;
 
   let base = 0;
-  let packageName = "None";
+  let packageName = "🟡 Starter / Introduction System ($199–$399)";
 
+  // 🟡 STARTER
   if (devices >= 1 && devices <= 3) {
+    base = 300;
+    packageName = "🟡 Starter / Introduction System ($199–$399)";
+  }
+
+  // 🟢 BASIC
+  else if (devices >= 4 && devices <= 6) {
     base = 800;
     packageName = "🟢 Basic System ($800+)";
   }
-  else if (devices >= 4 && devices <= 10) {
+
+  // 🔵 STANDARD
+  else if (devices >= 7 && devices <= 12) {
     base = 2000;
-    packageName = "🔵 Standard System (~$1,500–$2,500)";
+    packageName = "🔵 Standard System ($1,500–$2,500)";
   }
-  else if (devices >= 11) {
+
+  // 🔴 ADVANCED
+  else if (devices >= 13) {
     base = 5000;
     packageName = "🔴 Advanced System ($3,000–$7,500+)";
   }

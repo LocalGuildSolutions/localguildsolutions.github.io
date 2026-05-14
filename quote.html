@@ -1,17 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Quote Calculator</title>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LocalGuild Solutions - Quote Calculator</title>
 
   <style>
     body {
-      font-family: Arial;
+      font-family: Arial, sans-serif;
       background: #0f172a;
       color: #e2e8f0;
-      max-width: 600px;
+      max-width: 760px;
       margin: auto;
       padding: 20px;
+      line-height: 1.7;
     }
 
     h1, h2 {
@@ -20,13 +22,20 @@
 
     .box {
       background: #1e293b;
-      padding: 15px;
-      margin: 12px 0;
-      border-radius: 10px;
+      padding: 18px;
+      margin: 18px 0;
+      border-radius: 12px;
+      border: 1px solid #334155;
+      transition: 0.2s ease;
+    }
+
+    .box:hover {
+      transform: translateY(-2px);
+      border-color: #38bdf8;
     }
 
     button {
-      padding: 8px 12px;
+      padding: 8px 14px;
       margin: 5px;
       font-size: 16px;
       border: none;
@@ -34,106 +43,204 @@
       background: #38bdf8;
       color: black;
       cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      margin-top: 10px;
+      font-size: 16px;
+      background: #0f172a;
+      color: white;
     }
 
     .total {
-      font-size: 26px;
+      font-size: 32px;
       color: #22c55e;
       font-weight: bold;
     }
 
     .recommend {
-      font-size: 18px;
+      font-size: 20px;
       color: #facc15;
       font-weight: bold;
     }
 
     .note {
-      font-size: 12px;
+      font-size: 13px;
       opacity: 0.8;
+      margin-top: 10px;
+    }
+
+    .highlight {
+      color: #facc15;
+      font-weight: bold;
+    }
+
+    .counter {
+      font-size: 20px;
+      font-weight: bold;
+      margin: 0 10px;
+    }
+
+    hr {
+      border: 0;
+      border-top: 1px solid #334155;
+      margin: 30px 0;
     }
   </style>
 </head>
 
 <body>
 
-<h1>💰 Smart Quote Calculator</h1>
+<h1>💰 Smart Home Quote Calculator</h1>
+
+<p class="highlight">
+Estimate your system pricing based on property size, installed devices, cameras, and support needs.
+</p>
 
 <!-- DEVICES -->
 <div class="box">
+
 <h2>🔌 Zigbee Devices</h2>
 
-<p>Motion Sensors ($25)</p>
+<p>Motion Sensors ($25 hardware estimate)</p>
 <button onclick="change('motion', -1)">-</button>
-<span id="motion">0</span>
+<span class="counter" id="motion">0</span>
 <button onclick="change('motion', 1)">+</button>
 
-<p>Smart Switches ($25)</p>
+<p>Smart Switches ($25 hardware estimate)</p>
 <button onclick="change('switch', -1)">-</button>
-<span id="switch">0</span>
+<span class="counter" id="switch">0</span>
 <button onclick="change('switch', 1)">+</button>
 
-<p>Door Sensors ($25)</p>
+<p>Door Sensors ($25 hardware estimate)</p>
 <button onclick="change('door', -1)">-</button>
-<span id="door">0</span>
+<span class="counter" id="door">0</span>
 <button onclick="change('door', 1)">+</button>
+
 </div>
 
-<!-- PACKAGE AUTO -->
+<!-- PACKAGE -->
 <div class="box">
+
 <h2>📦 Recommended System</h2>
-<p class="recommend" id="package">🟡 Starter System ($300–$500)</p>
-<p class="note">System auto-selected based on total devices</p>
+
+<p class="recommend" id="package">
+🟡 Starter System ($300–$500)
+</p>
+
+<p class="note">
+System package automatically adjusts based on installed device count.
+</p>
+
 </div>
 
 <!-- AUTOMATIONS -->
 <div class="box">
-<h2>💡 Extra Automations</h2>
+
+<h2>🧠 Custom Automations</h2>
 
 <p class="note">
-Standard automations are included with each system.<br>
-Custom automation logic can be added below.
+Standard automations are included with each package.<br>
+Additional custom logic can be added below.
 </p>
 
-<p>Simple ($50)</p>
+<p>Simple Automation ($50)</p>
 <button onclick="change('autoS', -1)">-</button>
-<span id="autoS">0</span>
+<span class="counter" id="autoS">0</span>
 <button onclick="change('autoS', 1)">+</button>
 
-<p>Advanced ($75)</p>
+<p>Advanced Multi-Condition Automation ($75)</p>
 <button onclick="change('autoA', -1)">-</button>
-<span id="autoA">0</span>
+<span class="counter" id="autoA">0</span>
 <button onclick="change('autoA', 1)">+</button>
+
 </div>
 
 <!-- CAMERAS -->
 <div class="box">
-<h2>📷 Cameras</h2>
+
+<h2>📷 Camera Systems</h2>
 
 <p>Additional Cameras</p>
+
 <button onclick="change('cams', -1)">-</button>
-<span id="cams">0</span>
+<span class="counter" id="cams">0</span>
 <button onclick="change('cams', 1)">+</button>
 
-<p class="note">$350 includes first 2 cameras, extras $150 each</p>
+<p class="note">
+$350 minimum includes installation for up to 2 cameras.<br>
+Additional cameras estimated at $150 each.
+</p>
+
+</div>
+
+<!-- REMOTE ACCESS -->
+<div class="box">
+
+<h2>🌐 Remote Access</h2>
+
+<select id="remote" onchange="calc()">
+  <option value="0">None</option>
+  <option value="150">Private VPN / Tailscale Setup ($150)</option>
+  <option value="100">Cloud Remote Access Setup ($100)</option>
+</select>
+
+</div>
+
+<!-- SUPPORT -->
+<div class="box">
+
+<h2>🛠 Ongoing Support Plan</h2>
+
+<select id="support" onchange="calc()">
+  <option value="0">No Support Plan</option>
+  <option value="50">Remote Support Plan ($50/month)</option>
+  <option value="100">Managed Property Support ($100/month)</option>
+</select>
+
+<p class="note">
+Support plans are optional and not required for system operation.
+</p>
+
 </div>
 
 <!-- HARDWARE -->
 <div class="box">
-<h2>💻 Hardware</h2>
-<input type="number" id="hardware" value="0" onchange="calc()" placeholder="Optional hardware cost">
+
+<h2>💻 Additional Hardware</h2>
+
+<input type="number"
+id="hardware"
+value="0"
+onchange="calc()"
+placeholder="Optional custom hardware estimate">
+
 </div>
 
 <!-- TOTAL -->
 <div class="box">
-<h2>Total Estimate</h2>
+
+<h2>💰 Estimated Total</h2>
+
 <p class="total">$<span id="total">0</span></p>
+
 <p class="note">
-Estimate only — final pricing depends on layout, installation complexity, and device placement.
+Final pricing depends on installation complexity, wiring requirements, property layout, and device placement.
 </p>
+
 </div>
 
 <script>
+
 let motion = 0;
 let sw = 0;
 let door = 0;
@@ -142,12 +249,24 @@ let autoA = 0;
 let cams = 0;
 
 function change(type, val) {
-  if (type === 'motion') motion = Math.max(0, motion + val);
-  if (type === 'switch') sw = Math.max(0, sw + val);
-  if (type === 'door') door = Math.max(0, door + val);
-  if (type === 'autoS') autoS = Math.max(0, autoS + val);
-  if (type === 'autoA') autoA = Math.max(0, autoA + val);
-  if (type === 'cams') cams = Math.max(0, cams + val);
+
+  if (type === 'motion')
+    motion = Math.max(0, motion + val);
+
+  if (type === 'switch')
+    sw = Math.max(0, sw + val);
+
+  if (type === 'door')
+    door = Math.max(0, door + val);
+
+  if (type === 'autoS')
+    autoS = Math.max(0, autoS + val);
+
+  if (type === 'autoA')
+    autoA = Math.max(0, autoA + val);
+
+  if (type === 'cams')
+    cams = Math.max(0, cams + val);
 
   document.getElementById(type).innerText =
     type === 'switch' ? sw :
@@ -167,25 +286,21 @@ function calc() {
   let base = 0;
   let packageName = "🟡 Starter System ($300–$500)";
 
-  // 🟡 STARTER (1 device)
-  if (devices === 1) {
-    base = 300;
+  if (devices <= 1) {
+    base = 400;
     packageName = "🟡 Starter System ($300–$500)";
   }
 
-  // 🟢 BASIC (2–3 devices)
   else if (devices >= 2 && devices <= 3) {
     base = 800;
     packageName = "🟢 Basic System ($800+)";
   }
 
-  // 🔵 STANDARD (4–10 devices)
   else if (devices >= 4 && devices <= 10) {
     base = 2000;
     packageName = "🔵 Standard System ($1,500–$2,500)";
   }
 
-  // 🔴 ADVANCED (11+ devices)
   else if (devices >= 11) {
     base = 5000;
     packageName = "🔴 Advanced System ($3,000–$7,500+)";
@@ -193,11 +308,20 @@ function calc() {
 
   document.getElementById("package").innerText = packageName;
 
-  let hardware = parseInt(document.getElementById('hardware').value) || 0;
+  let hardware =
+    parseInt(document.getElementById('hardware').value) || 0;
+
+  let remote =
+    parseInt(document.getElementById('remote').value) || 0;
+
+  let support =
+    parseInt(document.getElementById('support').value) || 0;
 
   let camCost = 0;
+
   if (cams > 0) {
     camCost = 350;
+
     if (cams > 2) {
       camCost += (cams - 2) * 150;
     }
@@ -209,10 +333,16 @@ function calc() {
     (autoS * 50) +
     (autoA * 75) +
     camCost +
+    remote +
     hardware;
 
-  document.getElementById('total').innerText = total;
+  document.getElementById('total').innerText =
+    total.toLocaleString();
+
 }
+
+calc();
+
 </script>
 
 </body>
